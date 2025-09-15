@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthAwareness Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0d1b2a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: #4CAF50;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .stats-cards {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background-color: #1b263b;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            min-width: 150px;
+        }
+        
+        .stat-card i {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        
+        .stat-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .chat-container {
+            background-color: #1b263b;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+        
+        .chat-header {
+            background: linear-gradient(90deg, #1b263b, #2e7c31);
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .chat-header h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        #chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: #0d1b2a;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background-color: #2e7c31;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+            background-color: #415a77;
+            color: #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #2e7c31;
+            background-color: #1b263b;
+        }
+        
+        #user-input {
+            flex-grow: 1;
+            padding: 12px 18px;
+            background-color: #0d1b2a;
+            color: #e0e0e0;
+            border: 1px solid #2e7c31;
+            border-radius: 25px;
+            margin-right: 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        #send-btn {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        #send-btn:hover {
+            background-color: #3e8e41;
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background-color: #1b263b;
+            border-top: 1px solid #2e7c31;
+        }
+        
+        .suggestion-btn {
+            padding: 8px 16px;
+            background-color: rgba(46, 124, 49, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .suggestion-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            margin: 8px 0;
+            padding: 15px 20px;
+        }
+        
+        .typing-indicator span {
+            width: 10px;
+            height: 10px;
+            background-color: #a0a0a0;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 3px;
+            animation: bounce 1.5s infinite ease-in-out both;
+        }
+        
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .stats-cards {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
+            
+            .suggestions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-heartbeat"></i>
+            <h1>HealthAwareness Bot</h1>
+        </div>
+        <p class="tagline">Your AI-powered health education assistant</p>
+        
+        <div class="stats-cards">
+            <div class="stat-card">
+                <i class="fas fa-brain"></i>
+                <h3>AI-Powered</h3>
+                <p>Smart health insights</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-lock"></i>
+                <h3>Private</h3>
+                <p>Your data stays secure</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-book"></i>
+                <h3>Educational</h3>
+                <p>Learn about health</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2><i class="fas fa-comment-medical"></i> Health Chat</h2>
+            </div>
+            
+            <div id="chat-box">
+                <div class="message bot-message">
+                    Hi there! I'm HealthAwareness Bot, your AI health education assistant. 
+                </div>
+                <div class="message bot-message">
+                    I can provide information about symptoms, prevention, and general knowledge about various health conditions.
+                </div>
+                <div class="message bot-message">
+                    Try asking me about diseases, symptoms, or prevention methods. You can also use the suggested questions below!
+                </div>
+            </div>
+            
+            <div class="suggestions">
+                <button class="suggestion-btn">Symptoms of diabetes</button>
+                <button class="suggestion-btn">How to prevent heart disease?</button>
+                <button class="suggestion-btn">What is COVID-19?</button>
+                <button class="suggestion-btn">Importance of exercise</button>
+            </div>
+            
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Ask about any disease or health topic...">
+                <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>HealthAwareness Bot - Created for Hackathon Submission | Powered by Cohere AI</p>
+        <p>Remember: I provide educational information only, not medical advice.</p>
+    </footer>
+
+    <script>
+        // Global variables
+        const COHERE_API_KEY = 'EoIR6qEDRWwjofkS2tyNEEFbu6oh4lFz69cATOde';
+        let requestCount = 0;
+        const MAX_REQUESTS = 100;
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        
+        function addMessage(sender, text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            msgDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+            msgDiv.textContent = text;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            const indicatorDiv = document.createElement('div');
+            indicatorDiv.classList.add('typing-indicator');
+            indicatorDiv.id = 'typing-indicator';
+            indicatorDiv.innerHTML = '<span></span><span></span><span></span>';
+            indicatorDiv.style.display = 'flex';
+            chatBox.appendChild(indicatorDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+        
+        // Simulate API call for demo purposes
+        function simulateAIResponse(userQuestion) {
+            showTypingIndicator();
+            
+            // Simulate API delay
+            setTimeout(() => {
+                hideTypingIndicator();
+                
+                // Simple response logic for demo
+                const lowerQuestion = userQuestion.toLowerCase();
+                let response = "";
+                
+                if (lowerQuestion.includes("diabet")) {
+                    response = "Diabetes is a chronic condition that affects how your body processes blood sugar. There are two main types. Type 1 diabetes is an autoimmune condition, while Type 2 is often related to lifestyle factors. Common symptoms include increased thirst, frequent urination, and blurred vision.";
+                } else if (lowerQuestion.includes("heart") || lowerQuestion.includes("cardio")) {
+                    response = "Heart disease refers to various conditions that affect your heart. Prevention includes regular exercise, a balanced diet low in saturated fats, not smoking, and managing stress. Symptoms can include chest pain, shortness of breath, and fatigue.";
+                } else if (lowerQuestion.includes("covid") || lowerQuestion.includes("coronavirus")) {
+                    response = "COVID-19 is an infectious disease caused by the SARS-CoV-2 virus. Common symptoms include fever, cough, and loss of taste or smell. Prevention methods include vaccination, mask-wearing in crowded places, and good hand hygiene.";
+                } else if (lowerQuestion.includes("exercise") || lowerQuestion.includes("fit")) {
+                    response = "Regular exercise is crucial for maintaining good health. It helps control weight, reduces risk of heart disease, improves mental health, and strengthens bones and muscles. Aim for at least 150 minutes of moderate aerobic activity per week.";
+                } else if (lowerQuestion.includes("malaria")) {
+                    response = "Malaria is a mosquito-borne infectious disease. Symptoms include fever, tiredness, vomiting, and headaches. Prevention focuses on mosquito control and use of mosquito nets. In severe cases it can cause yellow skin, seizures, coma, or death.";
+                } else if (lowerQuestion.includes("hypertension") || lowerQuestion.includes("blood pressure")) {
+                    response = "Hypertension (high blood pressure) is a common condition where the long-term force of blood against your artery walls is high enough that it may eventually cause health problems. Lifestyle changes like reducing salt intake, regular exercise, and maintaining a healthy weight can help manage it.";
+                } else {
+                    response = "Thank you for your question about '" + userQuestion + "'. This is an important health topic. While I provide general information, remember to consult healthcare professionals for personalized advice.";
+                }
+                
+                response += "\n\nRemember: This is educational content only and not medical advice.";
+                addMessage('bot', response);
+            }, 1500);
+        }
+        
+        function handleSend() {
+            const userQuery = userInput.value.trim();
+            if (userQuery) {
+                addMessage('user', userQuery);
+                userInput.value = "";
+                simulateAIResponse(userQuery);
+            }
+        }
+        
+        // Event listeners
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+        
+        // Add click handlers to suggestion buttons
+        document.querySelectorAll('.suggestion-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                userInput.value = this.textContent;
+                handleSend();
+            });
+        });
+        
+        // Focus input on load
+        window.addEventListener('load', () => {
+            userInput.focus();
+        });
+    </script>
+</body>
+</html>
